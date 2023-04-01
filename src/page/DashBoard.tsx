@@ -1,9 +1,13 @@
 import MetaMaskOnboarding from "@metamask/onboarding";
+
+import styles from "@/res/css/dashboard.module.scss";
+
 import React, { useEffect, useState, useRef } from "react";
 import { ethers, BigNumber } from "ethers";
 // import assignmentAbi from "../res/Assignment.json";
 import assignmentAbi from "../res/Assignment.json";
 import ERC20Abi from "../res/ERC20.json";
+import logoImg from "@/res/img/logo.png";
 
 const CONNECT_TEXT = "지갑 연결하기";
 const CONNECTED_TEXT = "연결 해제";
@@ -171,9 +175,11 @@ function DashBoard() {
   };
 
   return (
-    <div>
-      <div className="header">
-        <h1>kurrency</h1>
+    <>
+      <div className={styles.header__wrapper}>
+        <div className={styles.header__logo}>
+          <img src={logoImg} />
+        </div>
         <button onClick={handleConnectButton}>{buttonText}</button>
       </div>
       <div className="dashboard">
@@ -207,7 +213,7 @@ function DashBoard() {
           <span>자산 가치</span>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,0 +1,41 @@
+:root {
+  --header-desktop-font-size: 20px;
+  --header-tablet-font-size: 15px;
+  --header-line-height: 20px;
+  --header-text-color: #000000;
+  --header-mobile-background-color: #ffffff;
+}
+
+@mixin default_font_setting {
+  font-family: "Pretendard Variable";
+  font-style: normal;
+}
+
+.header__wrapper {
+  @include default_font_setting();
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: transparent;
+  width: 100%;
+  z-index: 2;
+  padding: 16px 0px;
+  font-size: var(--header-desktop-font-size);
+  color: var(--header-text-color);
+  min-width: 360px;
+
+  .header__logo {
+    width: 127px;
+    height: 28px;
+    margin: 0px 0px 0px 24px;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
