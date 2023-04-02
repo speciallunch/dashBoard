@@ -1,5 +1,6 @@
 export type Styles = {
-  dashboard__wrapper: string
+  chart__wrapper: string
+  chart__title: string
 };
 
 export type ClassNames = keyof Styles;

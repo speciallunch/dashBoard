@@ -1,66 +1,87 @@
 import MetaMaskOnboarding from "@metamask/onboarding";
 
-import styles from "@/res/css/dashboard.module.scss";
-
 import React, { useEffect, useState, useRef } from "react";
 import { ethers, BigNumber } from "ethers";
-// import assignmentAbi from "../res/Assignment.json";
+
 import assignmentAbi from "../res/Assignment.json";
 import ERC20Abi from "../res/ERC20.json";
-import logoImg from "@/res/img/logo.png";
 
-const CONNECT_TEXT = "지갑 연결하기";
-const CONNECTED_TEXT = "연결 해제";
+import Header from "./Header";
+import MainContainer from "./MainContainer";
+import styles from "@/res/css/dashboard.module.scss";
+
 const assignmentAddress = "0x2F24860D46B11398214A5e1Ced2e29eFC26F1eE5";
 const tWEMIXAddress = "0xE8c96aC07E5E93895743bFCa5fA89B9DcF7d1e3d";
 const tUSDTAddress = "0x56d65102f1c8c21115803B975AdA4962F88c94e1";
 const tUSDCAddress = "0xea999d33f2b62c35D4CA613919dc835FeFba1E07";
 const tDAIAddress = "0xc368cb712c0532d9335027F892a0836259e2033E";
-const ETH_PRICE = 1653.22;
-const tWEMIX_PRICE = 1.732;
-const tDAI = 1.0014;
-const tUSDT = 0.9994;
-const tUSDC = 0.9993;
 
-enum AssetType {
-  NONE = "none",
-  WEMIX = "wemix",
-  ETH = "eth",
-  tUSDT = "tusdt",
-  tDAI = "tdai",
-  tUSDC = "tusdc",
+export const ETH_PRICE = 1653.22;
+const tWEMIX_PRICE = 1.732;
+const tDAI_PRICE = 1.0014;
+const tUSDT_PRICE = 0.9994;
+const tUSDC_PRICE = 0.9993;
+
+export enum AssetType {
+  NONE = "NONE",
+  WEMIX = "WEMIX",
+  ETH = "ETH",
+  tUSDT = "tUSDT",
+  tDAI = "tDAI",
+  tUSDC = "tUSDC",
 }
 
-class AssetInfo {
+export class AssetInfo {
   type: AssetType;
 
   price: number;
 
   asset: number;
 
-  assetPrice: number;
-
-  icon: ImageBitmap | undefined;
-
   constructor() {
     this.type = AssetType.NONE;
     this.price = 0;
     this.asset = 0;
-    this.assetPrice = this.price * this.asset;
   }
 }
 
+function generateAssetInfo(type: AssetType, asset: number) {
+  const assetInfo = new AssetInfo();
+  assetInfo.asset = asset;
+  switch (type) {
+    case AssetType.WEMIX:
+      assetInfo.price = tWEMIX_PRICE;
+      assetInfo.type = AssetType.WEMIX;
+      break;
+    case AssetType.ETH:
+      assetInfo.price = ETH_PRICE;
+      assetInfo.type = AssetType.ETH;
+      break;
+    case AssetType.tUSDT:
+      assetInfo.price = tUSDT_PRICE;
+      assetInfo.type = AssetType.tUSDT;
+      break;
+    case AssetType.tDAI:
+      assetInfo.price = tDAI_PRICE;
+      assetInfo.type = AssetType.tDAI;
+      break;
+    case AssetType.tUSDC:
+      assetInfo.price = tUSDC_PRICE;
+      assetInfo.type = AssetType.tUSDC;
+      break;
+  }
+  return assetInfo;
+}
+
 function DashBoard() {
-  const [buttonText, setButtonText] = useState(CONNECT_TEXT);
   const [isConnected, setConnected] = useState(false);
 
-  const [accounts, setAccounts] = React.useState<string[]>([]);
+  const [account, setAccounts] = React.useState<string>();
   const [provider, setProvider] = useState<ethers.providers.Web3Provider>();
   const [signer, setSigner] = useState<ethers.Signer>();
   const [contract, setContract] = useState<ethers.Contract>();
-
+  const [assets, setAssets] = useState<AssetInfo[]>([]);
   const [donateAmount, setDonateAmount] = useState(0);
-  const assetMap = new Map<number, AssetInfo>();
 
   const onboarding = useRef<MetaMaskOnboarding>();
 
@@ -71,34 +92,14 @@ function DashBoard() {
   }, []);
 
   useEffect(() => {
-    if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-      if (accounts.length > 0 && onboarding.current) {
-        setButtonText(CONNECTED_TEXT);
-        setConnected(true);
-        onboarding.current.stopOnboarding();
-      } else {
-        setButtonText(CONNECT_TEXT);
-        setConnected(false);
-      }
+    if (account && onboarding.current) {
+      setConnected(true);
+      handleTokenInfo();
     }
-  }, [accounts]);
-
-  // useEffect(() => {
-  //   if (MetaMaskOnboarding.isMetaMaskInstalled()) {
-  //     // window.ethereum
-  //     //   .request({ method: "eth_requestAccounts" })
-  //     //   .then((newAccounts: string[]) => setAccounts(newAccounts));
-  //     window.ethereum.on("accountsChanged", (newAccounts: string[]) =>
-  //       setAccounts(newAccounts)
-  //     );
-  //     return () => {
-  //       window.ethereum.removeListener(
-  //         "accountsChanged",
-  //         (newAccounts: string[]) => setAccounts(newAccounts)
-  //       );
-  //     };
-  //   }
-  // }, []);
+    return () => {
+      onboarding.current?.stopOnboarding();
+    };
+  }, [account]);
 
   const handleConnectButton = () => {
     if (!MetaMaskOnboarding.isMetaMaskInstalled()) {
@@ -114,7 +115,7 @@ function DashBoard() {
       ethereum
         .request({ method: "eth_requestAccounts" })
         .then((newAccounts: string[]) => {
-          setAccounts(newAccounts);
+          setAccounts(newAccounts[0]); // TODO: account 여러개인 경우?
           console.log("newAccount:", newAccounts);
         });
 
@@ -133,8 +134,8 @@ function DashBoard() {
 
       ethereum.on("accountsChanged", (accounts: string[]) => {
         console.log("accountChanged");
-        setAccounts(accounts);
-        signer.connect(provider); // 여기서 최초 연결시 에러
+        setAccounts(accounts[0]); // TODO: account 여러개인 경우?
+        // signer.connect(provider); // 여기서 최초 연결시 에러
       });
     } catch (error) {
       console.error(error);
@@ -142,8 +143,10 @@ function DashBoard() {
   };
 
   const handleDonateButton = async () => {
+    if (!isConnected) return;
     try {
       const result = await contract?.donate();
+      // handleGetDonateAmount();  // TODO: 현재 0원으로 나옴
       console.log("Donate call result:", result);
     } catch (error) {
       console.error("Error calling method:", error);
@@ -154,17 +157,44 @@ function DashBoard() {
   const handleTokenInfo = async () => {
     try {
       const result = await contract?.getPoolTokenInfo();
-      result.map((v: ethers.BigNumberish) => {
-        console.log(ethers.utils.formatUnits(v));
-      });
-      console.log(result);
-      console.log(ethers.utils.formatUnits(result.tDAIBalance));
+      const assetsArray = [];
+      assetsArray.push(
+        generateAssetInfo(
+          AssetType.WEMIX,
+          Number(ethers.utils.formatUnits(result.tWEMIXBalance))
+        )
+      );
+      assetsArray.push(
+        generateAssetInfo(
+          AssetType.ETH,
+          Number(ethers.utils.formatUnits(result.tETHBalance))
+        )
+      );
+      assetsArray.push(
+        generateAssetInfo(
+          AssetType.tUSDT,
+          Number(ethers.utils.formatUnits(result.tUSDTBalance))
+        )
+      );
+      assetsArray.push(
+        generateAssetInfo(
+          AssetType.tUSDC,
+          Number(ethers.utils.formatUnits(result.tUSDCBalance))
+        )
+      );
+      assetsArray.push(
+        generateAssetInfo(
+          AssetType.tDAI,
+          Number(ethers.utils.formatUnits(result.tDAIBalance))
+        )
+      );
+      setAssets(assetsArray);
     } catch (error) {
       console.error("Error calling method:", error);
     }
   };
 
-  const handleGetDonateAmountButton = async () => {
+  const handleGetDonateAmount = async () => {
     try {
       const result = await contract?.getDonationAmount(assignmentAddress);
       console.log("Method call result:", result);
@@ -174,46 +204,26 @@ function DashBoard() {
     }
   };
 
+  const calculateTotalAsset = () => {
+    return assets.reduce((acc, cur) => {
+      return (acc += cur.price * cur.asset);
+    }, 0);
+  };
+
   return (
-    <>
-      <div className={styles.header__wrapper}>
-        <div className={styles.header__logo}>
-          <img src={logoImg} />
-        </div>
-        <button onClick={handleConnectButton}>{buttonText}</button>
-      </div>
-      <div className="dashboard">
-        <div className="ether-account">
-          <h2>내 이더 기부액</h2>
-          <strong>{donateAmount * ETH_PRICE}</strong>
-          <button onClick={handleDonateButton} color="primary">
-            기부하기
-          </button>
-          <h3>내 기부량</h3>
-          <strong>{donateAmount}</strong>
-          <h4>달성율</h4>
-          <strong>{donateAmount * 100}%</strong>
-          <p color="grey">1ETH</p>
-          <button onClick={handleGetDonateAmountButton} color="primary">
-            기부액가져오기
-          </button>
-        </div>
-        <div className="ether-price">
-          <h2>ETH 가격</h2>
-          <strong>{ETH_PRICE}</strong>
-          <span>풀 자산 규모</span>
-        </div>
-        <div className="account-detail">
-          <h2>자산 상세 구성</h2>
-        </div>
-        <div className="account-price">
-          <h2>자산 정보</h2>
-          <button onClick={handleTokenInfo}>가져오기</button>
-          <span>자산 수량</span>
-          <span>자산 가치</span>
-        </div>
-      </div>
-    </>
+    <div className={styles.dashboard__wrapper}>
+      <Header
+        isConnected={isConnected}
+        account={account}
+        onClickConnect={handleConnectButton}
+      />
+      <MainContainer
+        donateAmount={donateAmount}
+        totalAssets={calculateTotalAsset()}
+        assetsInfo={assets}
+        onClickDonateButton={handleDonateButton}
+      />
+    </div>
   );
 }
 

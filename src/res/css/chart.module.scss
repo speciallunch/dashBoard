@@ -1,0 +1,16 @@
+.chart__wrapper {
+  width: 458px;
+  height: 554px;
+  margin: 97px auto;
+  display: block;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 32px;
+
+  .chart__title {
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 22px;
+    letter-spacing: -0.3px;
+  }
+}

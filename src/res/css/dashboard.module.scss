@@ -11,31 +11,10 @@
   font-style: normal;
 }
 
-.header__wrapper {
+.dashboard__wrapper {
   @include default_font_setting();
-  position: absolute;
+  max-width: 1200px;
+  position: relative;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: transparent;
-  width: 100%;
-  z-index: 2;
-  padding: 16px 0px;
-  font-size: var(--header-desktop-font-size);
-  color: var(--header-text-color);
-  min-width: 360px;
-
-  .header__logo {
-    width: 127px;
-    height: 28px;
-    margin: 0px 0px 0px 24px;
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    &:hover {
-      cursor: pointer;
-    }
-  }
+  background-color: #f6f7fa;
 }

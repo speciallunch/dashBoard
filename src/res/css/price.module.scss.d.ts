@@ -1,5 +1,8 @@
 export type Styles = {
-  dashboard__wrapper: string
+  price__wrapper: string
+  price__eth: string
+  price__title: string
+  price__totalasset: string
 };
 
 export type ClassNames = keyof Styles;
