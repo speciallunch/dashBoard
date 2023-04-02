@@ -1,0 +1,20 @@
+:root {
+  --header-desktop-font-size: 20px;
+  --header-tablet-font-size: 15px;
+  --header-line-height: 20px;
+  --header-text-color: #000000;
+  --header-mobile-background-color: #ffffff;
+}
+
+@mixin default_font_setting {
+  font-family: "Pretendard Variable";
+  font-style: normal;
+}
+
+.dashboard__wrapper {
+  @include default_font_setting();
+  max-width: 1200px;
+  position: relative;
+  display: flex;
+  background-color: #f6f7fa;
+}

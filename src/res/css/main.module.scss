@@ -1,0 +1,19 @@
+.main__wrapper {
+  margin: 121px auto;
+  position: relative;
+  display: flex;
+  flex-flow: wrap;
+  background-color: #f6f7fa;
+
+  .main__title {
+    margin: 42px 42px auto;
+    position: absolute;
+    width: 76px;
+    height: 30px;
+
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: -0.3px;
+  }
+}
