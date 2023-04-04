@@ -1,31 +1,118 @@
 .detail__wrapper {
   width: 458px;
   height: 554px;
-  margin: 97px auto;
-  display: block;
+  display: flex;
   background-color: #ffffff;
   border-radius: 12px;
-  padding: 32px;
+  padding: 32px 32px 0px;
 
-  .detail__title {
-    font-weight: 700;
-    font-size: 17px;
-    line-height: 22px;
-    letter-spacing: -0.3px;
-  }
-
-  .detail__subtitle {
+  .detail__contents {
     width: 394px;
-    height: 18px;
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
+    height: 504px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
 
-    span {
-      font-size: 15px;
-      line-height: 18px;
+    .detail__title {
+      align-items: center;
+      font-weight: 700;
+      font-size: 17px;
+      line-height: 22px;
+      letter-spacing: -0.3px;
+    }
 
-      color: #7c89a8;
+    .detail__prices {
+      width: 394px;
+      height: 462px;
+
+      .prices__attribute {
+        width: 394px;
+        height: 18px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0px;
+        gap: 179px;
+
+        span {
+          font-size: 15px;
+          line-height: 18px;
+          color: #7c89a8;
+        }
+      }
+
+      .prices__rows {
+        width: 394px;
+        height: 444px;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+
+        .asset__row {
+          width: 394px;
+          height: 88px;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 12px;
+
+          img {
+            width: 26px;
+            height: 26px;
+          }
+
+          .asset__detail {
+            width: 356px;
+            height: 88px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f2f4fa;
+
+            .asset__type__amount {
+              width: 173px;
+              height: 42px;
+              display: flex;
+              flex-direction: column;
+              justify-content: center;
+              align-items: flex-start;
+              padding: 0px;
+              gap: 4px;
+
+              .asset__type {
+                font-weight: 700;
+                font-size: 18px;
+                line-height: 20px;
+                letter-spacing: -0.4px;
+              }
+
+              .asset__amount {
+                font-weight: 500;
+                font-size: 15px;
+                line-height: 18px;
+                letter-spacing: -0.4px;
+                color: #7c89a8;
+              }
+            }
+
+            .asset__price {
+              width: 173px;
+              height: 42px;
+              display: flex;
+              flex-direction: column;
+              justify-content: flex-start;
+              align-items: flex-end;
+              font-weight: 700;
+              font-size: 15px;
+              line-height: 20px;
+              letter-spacing: -0.4px;
+            }
+          }
+        }
+      }
     }
   }
 
