@@ -38,16 +38,20 @@ const AssetRowDetail = ({ assetInfo }: AssetRowDetailProps) => {
   }
 
   return (
-    <div className={styles.detail__asset}>
+    <>
       <img src={getIcon(assetInfo.type)} alt={assetInfo.type} />
-      <div className={styles.detail__asset__row}>
-        <div className={styles.detail__asset__price}>
-          <span>{assetInfo.type}</span>
-          <p>{assetInfo.asset}</p>
+      <div className={styles.asset__detail}>
+        <div className={styles.asset__type__amount}>
+          <div className={styles.asset__type}>{assetInfo.type}</div>
+          <div className={styles.asset__amount}>{assetInfo.asset}</div>
         </div>
-        <strong>{`$${(assetInfo.asset * assetInfo.price).toFixed(7)}`}</strong>
+        <div className={styles.asset__price}>
+          <strong>{`$${(assetInfo.asset * assetInfo.price).toFixed(
+            7
+          )}`}</strong>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -66,7 +70,7 @@ const AssetDetail = ({ assetsInfo }: AssetDetailProps) => {
 
   const assets = Array.from({ length: assetsInfo.length }, (_, idx) => {
     return (
-      <div key={`asset_${idx}`}>
+      <div className={styles.asset__row} key={`asset_${idx}`}>
         <AssetRowDetail assetInfo={assetsInfo[idx]} />
       </div>
     );
@@ -75,12 +79,16 @@ const AssetDetail = ({ assetsInfo }: AssetDetailProps) => {
   return (
     <>
       <div className={styles.detail__wrapper}>
-        <h2 className={styles.detail__title}>자산 정보</h2>
-        <div className={styles.detail__subtitle}>
-          <span>자산 수량</span>
-          <span>자산 가치</span>
+        <div className={styles.detail__contents}>
+          <h2 className={styles.detail__title}>자산 정보</h2>
+          <div className={styles.detail__prices}>
+            <div className={styles.prices__attribute}>
+              <span>자산 수량</span>
+              <span>자산 가치</span>
+            </div>
+            <div className={styles.prices__rows}>{assets}</div>
+          </div>
         </div>
-        {assets}
       </div>
     </>
   );
